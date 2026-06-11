@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>StringLog</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --gold: #e2c07a;
+      --gold-dim: #9a8455;
+      --card: #1a1a1a;
+      --card-2: #232323;
+      --border: #2a2a2a;
+      --text: #f2f2f2;
+      --text-dim: #9a9a9a;
+      --green: #4caf50;
+      --yellow: #ffc107;
+      --red: #f44336;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height:100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    #root { height:100vh; height:100dvh; display:flex; flex-direction:column; }
+    input, select, textarea, button { font-family: inherit; font-size: 16px; color: var(--text); }
+    textarea { resize: none; }
+    .scroll { overflow-y:auto; -webkit-overflow-scrolling: touch; }
+    .scroll::-webkit-scrollbar { display:none; }
+    button { cursor:pointer; border:none; background:none; }
+    ::placeholder { color:#666; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+    @keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
+    .sheet-enter { animation: slideUp .22s ease-out; }
+    .fade-enter { animation: fadeIn .18s ease-out; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="vendor/react.production.min.js"></script>
+  <script src="vendor/react-dom.production.min.js"></script>
+
+  <!-- Plain logic modules: the data layer loads bulletproof, before the UI. -->
+  <script src="js/util.js"></script>
+  <script src="js/data-service.js"></script>
+  <script src="js/platform.js"></script>
+  <script src="js/notifications.js"></script>
+
+  <!-- UI: plain React.createElement, no build step. jsPDF lazy-loads on first PDF export. -->
+  <script src="js/app.js"></script>
+</body>
+</html>
