@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>StringLog</title>
+  <meta name="description" content="Track your tennis racquets, string jobs, and how every setup plays. Your data stays on your device." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="StringLog" />
+  <meta property="og:description" content="Track your tennis racquets, string jobs, and how every setup plays." />
+  <meta property="og:url" content="https://matthew-esbro.github.io/stringlog/" />
+  <meta property="og:image" content="https://matthew-esbro.github.io/stringlog/icons/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <style>
     :root {
       --bg: #0a0a0a;
@@ -38,6 +49,15 @@
     @keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
     .sheet-enter { animation: slideUp .22s ease-out; }
     .fade-enter { animation: fadeIn .18s ease-out; }
+    /* On iPad / desktop, present as a centered column instead of stretching edge to edge. */
+    @media (min-width: 700px) {
+      #root {
+        max-width: 680px;
+        margin: 0 auto;
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+      }
+    }
   </style>
 </head>
 <body>

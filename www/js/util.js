@@ -62,6 +62,11 @@
     if (h > 0 && h < 1) return Math.round(h * 60) + 'm';
     return round1(h) + 'h';
   }
+  function formatMoney(n) {
+    var x = Number(n);
+    if (isNaN(x)) return '';
+    return '$' + x.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
 
   var SURFACES = [
     { value: 'hard', label: 'Hard' },
@@ -127,7 +132,7 @@
     parseDate: parseDate, formatDate: formatDate, formatDateShort: formatDateShort,
     daysSince: daysSince, daysBetween: daysBetween,
     lbsToKg: lbsToKg, kgToLbs: kgToLbs, round1: round1,
-    displayTension: displayTension, formatHours: formatHours,
+    displayTension: displayTension, formatHours: formatHours, formatMoney: formatMoney,
     SURFACES: SURFACES, SESSION_TYPES: SESSION_TYPES, WHY_RESTRUNG: WHY_RESTRUNG,
     FEEL_LABELS: FEEL_LABELS, STRING_TYPES: STRING_TYPES, GRIP_SIZES: GRIP_SIZES,
     COLORS: COLORS, labelFor: labelFor, stringStatus: stringStatus

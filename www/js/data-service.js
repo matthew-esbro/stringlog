@@ -36,6 +36,10 @@
     stringers: 'stringers', customStrings: 'customStrings', settings: 'settings'
   };
 
+  // ---- storage schema version: bump + migrate here when the shape of stored data changes ----
+  var SCHEMA_VERSION = 1;
+  if (Store.get('schemaVersion', null) == null) Store.set('schemaVersion', SCHEMA_VERSION);
+
   var DEFAULT_SETTINGS = {
     player_name: '', units: 'lbs',
     reminders_enabled: false,
@@ -331,7 +335,7 @@
   // ---------------- full backup / restore (JSON) ----------------
   function exportJSON() {
     return JSON.stringify({
-      app: 'stringlog', schema: 1, exported_at: U.nowISO(),
+      app: 'stringlog', schema: SCHEMA_VERSION, exported_at: U.nowISO(),
       racquets: coll(K.racquets), stringJobs: coll(K.stringJobs), sessions: coll(K.sessions),
       stringers: coll(K.stringers), customStrings: coll(K.customStrings), settings: getSettings()
     }, null, 2);
@@ -348,6 +352,7 @@
     save(K.stringers, Array.isArray(data.stringers) ? data.stringers : []);
     save(K.customStrings, Array.isArray(data.customStrings) ? data.customStrings : []);
     Store.set(K.settings, Object.assign({}, DEFAULT_SETTINGS, data.settings || {}));
+    Store.set('schemaVersion', SCHEMA_VERSION);
     return { ok: true, racquets: data.racquets.length, sessions: (Array.isArray(data.sessions) ? data.sessions : []).length };
   }
 

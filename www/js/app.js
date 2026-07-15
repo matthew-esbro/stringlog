@@ -187,7 +187,7 @@
         props.options.map(function (o) {
           var sel = props.value === o.value;
           return h('button', {
-            key: o.value, onClick: function () { props.onChange(o.value); },
+            key: o.value, onClick: function () { SL.platform.haptic('select'); props.onChange(o.value); },
             style: {
               padding: '9px 13px', borderRadius: 10, fontSize: 14, fontWeight: 600,
               background: sel ? C.gold : C.card2, color: sel ? '#1a1408' : C.text,
@@ -206,10 +206,11 @@
       }));
   }
   function Toggle(props) {
+    function flip() { SL.platform.haptic('select'); props.onChange(!props.value); }
     return h('div', {
       role: 'switch', 'aria-checked': !!props.value, 'aria-label': props.label, tabIndex: 0,
-      onClick: function () { props.onChange(!props.value); },
-      onKeyDown: function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); props.onChange(!props.value); } },
+      onClick: flip,
+      onKeyDown: function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); } },
       style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', cursor: 'pointer' }
     },
       h('div', { style: { paddingRight: 12 } },
@@ -224,7 +225,7 @@
       [1, 2, 3, 4, 5].map(function (n) {
         return h('button', {
           key: n, 'aria-label': n + (n === 1 ? ' star' : ' stars'), 'aria-pressed': n <= val,
-          onClick: props.onChange ? function () { props.onChange(n === val ? null : n); } : null,
+          onClick: props.onChange ? function () { SL.platform.haptic('select'); props.onChange(n === val ? null : n); } : null,
           style: { padding: 2, lineHeight: 0, cursor: props.onChange ? 'pointer' : 'default' }
         }, h(Icon, { name: 'star', size: size, color: C.gold, fill: n <= val ? C.gold : 'none', stroke: 1.5 }));
       }),
@@ -387,7 +388,7 @@
     var f = useForm(Object.assign({}, RACQUET_BLANK));
     var sv = useState(null); var saved = sv[0], setSaved = sv[1];
     var canSave = f.form.brand.trim() && f.form.model.trim();
-    var save = useOnce(function () { var r = DS.addRacquet(f.form); nav.refresh(); setSaved(r); });
+    var save = useOnce(function () { SL.platform.haptic('success'); var r = DS.addRacquet(f.form); nav.refresh(); setSaved(r); });
     if (saved) {
       return h(Screen, { title: 'Racquet Added', onBack: function () { nav.popToRoot(); } },
         h('div', { style: { textAlign: 'center', padding: '26px 10px 18px' } },
@@ -410,7 +411,7 @@
     var r = DS.getRacquet(props.id);
     var f = useForm(Object.assign({}, RACQUET_BLANK, r));
     var canSave = f.form.brand.trim() && f.form.model.trim();
-    var save = useOnce(function () { DS.updateRacquet(r.id, f.form); nav.refresh(); nav.pop(); });
+    var save = useOnce(function () { SL.platform.haptic('success'); DS.updateRacquet(r.id, f.form); nav.refresh(); nav.pop(); });
     return h(Screen, { title: 'Edit Racquet', onBack: function () { nav.pop(); } },
       h(RacquetFields, { form: f.form, set: f.set }),
       h('div', { style: { height: 6 } }),
@@ -535,6 +536,7 @@
       ? ('Racquet rec: ' + U.displayTension(racquet.recommended_tension_min, settings.units) + ' – ' + U.displayTension(racquet.recommended_tension_max, settings.units)) : null;
     var canSave = form.racquet_id && form.mains.brand.trim() && form.mains.model.trim() && form.mains_tension_lbs != null;
     var save = useOnce(function () {
+      SL.platform.haptic('success');
       var payload = {
         racquet_id: form.racquet_id, date_strung: form.date_strung, stringer_name: form.stringer_name,
         mains_string_brand: form.mains.brand, mains_string_model: form.mains.model, mains_gauge: form.mains.gauge, mains_type: form.mains.type,
@@ -599,7 +601,7 @@
     var hours = DS.hoursPlayedForJob(j.id), feel = DS.avgFeelForJob(j.id);
     var sessions = DS.listSessions({ stringJobId: j.id });
     function del() { if (window.confirm('Delete this string job? Linked sessions are kept but unlinked.')) { DS.deleteStringJob(j.id); nav.refresh(); nav.pop(); } }
-    function broke() { DS.markBroke(j.id); nav.refresh(); }
+    function broke() { SL.platform.haptic('warning'); DS.markBroke(j.id); nav.refresh(); }
     return h(Screen, { title: 'String Job', onBack: function () { nav.pop(); },
       right: h('button', { onClick: function () { nav.push(AddStringJobScreen, { editId: j.id }); }, style: { color: C.gold, fontSize: 15.5 } }, 'Edit') },
       racquet ? h('div', { style: { fontSize: 13.5, color: C.textDim, marginBottom: 10 } }, racquet.nickname || (racquet.brand + ' ' + racquet.model)) : null,
@@ -622,7 +624,7 @@
         h(SpecRow, { label: 'Stringer', value: j.stringer_name }),
         h(SpecRow, { label: 'Machine', value: j.stringing_machine }),
         h(SpecRow, { label: 'Pre-stretch', value: j.pre_stretch_applied ? 'Yes' : null }),
-        h(SpecRow, { label: 'Cost', value: (j.cost != null && j.cost !== '') ? ('$' + j.cost) : null }),
+        h(SpecRow, { label: 'Cost', value: (j.cost != null && j.cost !== '') ? U.formatMoney(j.cost) : null }),
         j.notes ? h('div', { style: { fontSize: 13.5, color: C.text, marginTop: 10, lineHeight: 1.45 } }, j.notes) : null),
       !j.date_broke ? h('div', null, h(Button, { variant: 'secondary', onClick: broke }, 'Mark as Broke Today'), h('div', { style: { height: 10 } })) : null,
       h(SectionLabel, null, 'Sessions on this job (' + sessions.length + ')'),
@@ -695,6 +697,7 @@
       ? (editing.string_job_id ? DS.getStringJob(editing.string_job_id) : null)
       : DS.currentStringJob(form.racquet_id);
     var save = useOnce(function () {
+      SL.platform.haptic('success');
       var payload = {
         racquet_id: form.racquet_id, string_job_id: job ? job.id : null, date: form.date,
         duration_minutes: form.duration_minutes, surface: form.surface, session_type: form.session_type,
@@ -752,7 +755,7 @@
         h('div', { style: { height: 10 } }),
         h(Button, { variant: 'secondary', onClick: function () {
           var rid = last ? last.racquet_id : null;
-          if (last && last.string_job_id) { DS.markBroke(last.string_job_id); nav.refresh(); }
+          if (last && last.string_job_id) { SL.platform.haptic('warning'); DS.markBroke(last.string_job_id); nav.refresh(); }
           setStep('form'); setFormKey(formKey + 1);
           nav.push(AddStringJobScreen, { racquetId: rid, why: 'broke' });
         } }, 'Log String Break'),
@@ -766,7 +769,7 @@
     return h('div', { style: { display: 'flex', background: C.card, border: '1px solid ' + C.border, borderRadius: 10, padding: 3, gap: 3, marginBottom: 14 } },
       props.options.map(function (o) {
         var sel = props.value === o.value;
-        return h('button', { key: o.value, onClick: function () { props.onChange(o.value); },
+        return h('button', { key: o.value, onClick: function () { SL.platform.haptic('select'); props.onChange(o.value); },
           style: { flex: 1, padding: '9px 0', borderRadius: 8, fontSize: 13.5, fontWeight: 700, background: sel ? C.gold : 'transparent', color: sel ? '#1a1408' : C.textDim } }, o.label);
       }));
   }
@@ -792,7 +795,7 @@
         h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 16 } },
           h(Stat, { label: 'Sessions', value: t.totalSessions }),
           h(Stat, { label: 'Hours played', value: U.formatHours(t.totalHours) }),
-          t.totalCost != null ? h(Stat, { label: 'Spent stringing', value: '$' + t.totalCost }) : null,
+          t.totalCost != null ? h(Stat, { label: 'Spent stringing', value: U.formatMoney(t.totalCost) }) : null,
           h(Stat, { label: 'String jobs', value: t.jobCount })),
         most ? h('div', { style: { marginTop: 12, paddingTop: 12, borderTop: '1px solid ' + C.border, fontSize: 13.5, color: C.textDim } },
           'Most used string: ', h('span', { style: { color: C.text, fontWeight: 600 } }, most.name + ' (' + most.count + ')')) : null),
@@ -942,7 +945,7 @@
     var nav = useNav();
     var existing = props.id ? DS.listStringers().find(function (x) { return x.id === props.id; }) : null;
     var f = useForm(existing ? Object.assign({}, existing) : { name: '', location: '', contact: '', notes: '' });
-    var save = useOnce(function () { if (props.id) DS.updateStringer(props.id, f.form); else DS.addStringer(f.form); nav.refresh(); nav.pop(); });
+    var save = useOnce(function () { SL.platform.haptic('success'); if (props.id) DS.updateStringer(props.id, f.form); else DS.addStringer(f.form); nav.refresh(); nav.pop(); });
     function del() { if (window.confirm('Delete this stringer?')) { DS.deleteStringer(props.id); nav.refresh(); nav.pop(); } }
     return h(Screen, { title: props.id ? 'Edit Stringer' : 'Add Stringer', onBack: function () { nav.pop(); } },
       h(TextField, { label: 'Name', required: true, value: f.form.name, onChange: f.set('name') }),

@@ -241,6 +241,21 @@
     try { window.open(url, '_blank'); } catch (e) { location.href = url; }
   }
 
+  // ---------------- haptics (no-op in a browser) ----------------
+  function haptic(kind) {
+    var P = plugins();
+    if (!P.Haptics) return;
+    try {
+      if (kind === 'success' || kind === 'warning' || kind === 'error') {
+        P.Haptics.notification({ type: kind.toUpperCase() });
+      } else {
+        // one-off selection ticks use a light impact: the plugin's selectionChanged
+        // is silent unless selectionStart was called first
+        P.Haptics.impact({ style: 'LIGHT' });
+      }
+    } catch (e) {}
+  }
+
   // Open a file picker and read the chosen file as text. Works in WKWebView
   // (iOS shows the document picker) and in a regular browser.
   function pickTextFile(accept) {
@@ -276,6 +291,6 @@
   SL.platform = {
     isNative: isNative, copyText: copyText, shareDataUrl: shareDataUrl, share: share,
     shareTextFiles: shareTextFiles, openUrl: openUrl, pickTextFile: pickTextFile, getAppVersion: getAppVersion,
-    buildText: buildText, drawCard: drawCard, buildProfile: buildProfile
+    haptic: haptic, buildText: buildText, drawCard: drawCard, buildProfile: buildProfile
   };
 })();
