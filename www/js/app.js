@@ -43,6 +43,13 @@
           h('polygon', { points: '12,2.5 14.9,8.6 21.5,9.5 16.7,14.2 17.9,20.8 12,17.6 6.1,20.8 7.3,14.2 2.5,9.5 9.1,8.6' }));
       case 'check':
         content = h('path', { d: 'M5 12l4.5 4.5L19 7' }); break;
+      case 'trophy':
+        content = h('g', null,
+          h('path', { d: 'M7.5 3.5h9V8a4.5 4.5 0 01-9 0V3.5z' }),
+          h('path', { d: 'M7.5 5H4.6c.1 2 1.4 3.3 3.2 3.5' }),
+          h('path', { d: 'M16.5 5h2.9c-.1 2-1.4 3.3-3.2 3.5' }),
+          h('line', { x1: 12, y1: 12.9, x2: 12, y2: 15.6 }),
+          h('path', { d: 'M9.4 18.5h5.2M10.4 15.6h3.2' })); break;
       default: content = null;
     }
     return h('svg', { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: color, strokeWidth: sw, strokeLinecap: 'round', strokeLinejoin: 'round' }, content);
@@ -525,7 +532,7 @@
       date_broke: editing.date_broke || null
     } : {
       racquet_id: pre, date_strung: U.todayISODate(), stringer_name: '',
-      mains: { brand: '', model: '', gauge: '', type: '' }, mains_tension_lbs: null,
+      mains: Object.assign({ brand: '', model: '', gauge: '', type: '' }, props.prefillMains || {}), mains_tension_lbs: null,
       crosses_same_as_mains: true, crosses: { brand: '', model: '', gauge: '', type: '' }, crosses_tension_lbs: null,
       pre_stretch_applied: false, stringing_machine: '', cost: null,
       why_restrung: props.why || (props.firstTime ? 'first_time' : 'new_setup'), notes: '', date_broke: null
@@ -977,11 +984,119 @@
       h(EmptyState, { title: props.title || 'Screen', subtitle: 'This screen is being built.' }));
   }
 
+  // ============================ Explore: pro setups + setup finder ============================
+  function ExploreNavCard(props) {
+    return h(Card, { onClick: props.onClick },
+      h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 } },
+        h('div', { style: { minWidth: 0 } },
+          h('div', { style: { fontSize: 17, fontWeight: 700 } }, props.title),
+          h('div', { style: { fontSize: 13.5, color: C.textDim, marginTop: 3, lineHeight: 1.4 } }, props.subtitle)),
+        h(Icon, { name: 'chevron', size: 20, color: C.textDim })));
+  }
+
+  function ExploreTab() {
+    var nav = useNav();
+    return h(Screen, { title: 'Explore' },
+      h(ExploreNavCard, { title: 'Pro Player Setups', subtitle: 'What Alcaraz, Swiatek, Federer and more actually play with.',
+        onClick: function () { nav.push(ProSetupsScreen, {}); } }),
+      h(ExploreNavCard, { title: 'Setup Finder', subtitle: 'Tell it your game — more spin, power, comfort — and get string recommendations.',
+        onClick: function () { nav.push(SetupFinderScreen, {}); } }),
+      h('div', { style: { fontSize: 12.5, color: C.textDim, lineHeight: 1.5, marginTop: 10, padding: '0 2px' } },
+        'Pro setups are as widely reported by stringing teams and gear press. Pros play customized frames under retail paint and adjust tension constantly.'));
+  }
+
+  function ProSetupsScreen() {
+    var nav = useNav();
+    return h(Screen, { title: 'Pro Setups', onBack: function () { nav.pop(); } },
+      SL.advisor.PRO_SETUPS.map(function (p) {
+        return h(Card, { key: p.id, onClick: function () { nav.push(ProSetupDetail, { id: p.id }); } },
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 } },
+            h('div', { style: { minWidth: 0 } },
+              h('div', { style: { fontSize: 16.5, fontWeight: 700 } }, p.flag + ' ' + p.name),
+              h('div', { style: { fontSize: 13, color: C.textDim, marginTop: 2 } }, p.racquet)),
+            p.legend ? h(Badge, { tone: 'gold' }, 'Legend') : null),
+          h('div', { style: { fontSize: 13.5, color: C.text, marginTop: 8 } },
+            p.mains + (p.crosses && p.crosses !== 'Same as mains' ? ' + ' + p.crosses : '')),
+          h('div', { style: { fontSize: 12.5, color: C.gold, fontWeight: 600, marginTop: 3 } }, p.tension));
+      }),
+      h('div', { style: { fontSize: 12.5, color: C.textDim, lineHeight: 1.5, marginTop: 6, padding: '0 2px' } },
+        'Tour tensions run from Adrian Mannarino’s famously slack sub-40 lbs to Sinner’s 60-plus. There is no one right answer.'));
+  }
+
+  function ProSetupDetail(props) {
+    var nav = useNav();
+    var p = SL.advisor.PRO_SETUPS.find(function (x) { return x.id === props.id; });
+    if (!p) return h(Screen, { title: 'Pro Setup', onBack: function () { nav.pop(); } }, h(EmptyState, { title: 'Player not found' }));
+    return h(Screen, { title: p.name, onBack: function () { nav.pop(); } },
+      h('div', { style: { fontSize: 14, color: C.textDim, marginBottom: 12 } }, p.flag + ' ' + p.style + (p.legend ? ' · Legend' : '')),
+      h(Card, null,
+        h(SpecRow, { label: 'Racquet', value: p.racquet }),
+        h(SpecRow, { label: 'Mains', value: p.mains }),
+        h(SpecRow, { label: 'Crosses', value: p.crosses }),
+        h(SpecRow, { label: 'Tension', value: p.tension })),
+      h(Card, null, h('div', { style: { fontSize: 13.5, color: C.text, lineHeight: 1.55 } }, p.notes)),
+      p.prefill ? h(Button, { icon: 'plus', onClick: function () { nav.push(AddStringJobScreen, { prefillMains: p.prefill }); } }, 'Try This String') : null,
+      h('div', { style: { fontSize: 12.5, color: C.textDim, lineHeight: 1.5, marginTop: 14 } },
+        'As widely reported. Pro frames are customized under the paint and pro tensions suit pro swings — treat this as inspiration, not a prescription.'));
+  }
+
+  function SetupFinderScreen() {
+    var nav = useNav();
+    var settings = DS.getSettings();
+    var racquet = DS.listRacquets({ activeOnly: true })[0] || null;
+    var f = useForm({ goal: 'spin', secondary: '', elbow: false, breaker: false, value: false });
+    var form = f.form, set = f.set;
+    var rec = useMemo(function () {
+      return SL.advisor.recommend(DS.getStringCatalog(), form, racquet);
+    }, [form.goal, form.secondary, form.elbow, form.breaker, form.value]);
+    var secOpts = [{ value: '', label: 'None' }].concat(SL.advisor.GOALS.filter(function (g) { return g.value !== form.goal; }));
+    function useString(pre) {
+      nav.push(AddStringJobScreen, { prefillMains: pre });
+    }
+    return h(Screen, { title: 'Setup Finder', onBack: function () { nav.pop(); } },
+      h(Segmented, { label: 'What do you want more of?', value: form.goal,
+        onChange: function (v) { set('goal')(v); if (form.secondary === v) set('secondary')(''); }, options: SL.advisor.GOALS }),
+      h(Segmented, { label: 'Also nice to have', value: form.secondary, onChange: set('secondary'), options: secOpts }),
+      h(Card, null,
+        h(Toggle, { label: 'Elbow or arm soreness', hint: 'Filters out stiff polys entirely', value: form.elbow, onChange: set('elbow') }),
+        h(Toggle, { label: 'I break strings often', value: form.breaker, onChange: set('breaker') }),
+        h(Toggle, { label: 'Keep it budget-friendly', value: form.value, onChange: set('value') })),
+      h(SectionLabel, null, 'Recommended Strings'),
+      rec.picks.length ? h('div', null, rec.picks.map(function (p, i) {
+        return h(Card, { key: p.id },
+          h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 } },
+            h('div', { style: { fontSize: 15.5, fontWeight: 700, color: C.text, minWidth: 0 } }, (i + 1) + '. ' + (p.custom ? '★ ' : '') + p.brand + ' ' + p.model),
+            h('span', { style: { fontSize: 12.5, color: C.textDim, whiteSpace: 'nowrap' } }, [p.gauge_label, p.type].filter(Boolean).join(' · '))),
+          p.why ? h('div', { style: { fontSize: 13, color: C.textDim, marginTop: 5, lineHeight: 1.45 } }, p.why) : null,
+          h('div', { style: { marginTop: 10 } },
+            h('button', { onClick: function () { useString({ brand: p.brand, model: p.model, gauge: p.gauge_label, type: p.type }); },
+              style: { color: C.gold, fontSize: 14, fontWeight: 600 } }, '+ Use in a String Job')));
+      })) : h('div', { style: { fontSize: 13.5, color: C.textDim, padding: '4px 2px 10px' } }, 'No matches — try relaxing a preference.'),
+      rec.hybrid ? h('div', null,
+        h(SectionLabel, null, 'Or Go Hybrid'),
+        h(Card, null,
+          h('div', { style: { fontSize: 15, fontWeight: 700, color: C.gold } }, rec.hybrid.title),
+          h('div', { style: { fontSize: 13.5, color: C.text, marginTop: 6 } }, 'Mains: ' + rec.hybrid.mains),
+          h('div', { style: { fontSize: 13.5, color: C.text, marginTop: 2 } }, 'Crosses: ' + rec.hybrid.crosses),
+          h('div', { style: { fontSize: 13, color: C.textDim, marginTop: 6, lineHeight: 1.45 } }, rec.hybrid.why),
+          h('div', { style: { marginTop: 10 } },
+            h('button', { onClick: function () { useString(rec.hybrid.prefill); }, style: { color: C.gold, fontSize: 14, fontWeight: 600 } }, '+ Use in a String Job')))) : null,
+      h(SectionLabel, null, 'Tension'),
+      h(Card, null,
+        rec.tension.targetLbs ? h('div', { style: { fontSize: 15, fontWeight: 700, color: C.gold, marginBottom: 6 } },
+          'Start around ' + U.displayTension(rec.tension.targetLbs, settings.units) + (racquet ? ' on your ' + (racquet.nickname || racquet.model) : '')) : null,
+        h('div', { style: { fontSize: 13.5, color: C.text, lineHeight: 1.5 } }, rec.tension.line),
+        rec.tension.extra ? h('div', { style: { fontSize: 13, color: C.textDim, lineHeight: 1.5, marginTop: 8 } }, rec.tension.extra) : null),
+      h('div', { style: { fontSize: 12.5, color: C.textDim, lineHeight: 1.5, marginTop: 12 } },
+        'Recommendations come from the built-in string catalog and general stringing wisdom — your logged sessions are always the better judge.'));
+  }
+
   // ============================ Tab bar ============================
   var TABS = [
     { key: 'racquets', label: 'Racquets', icon: 'racquet', Comp: RacquetsTab },
     { key: 'log', label: 'Log', icon: 'plus', Comp: LogTab },
     { key: 'history', label: 'History', icon: 'history', Comp: HistoryTab },
+    { key: 'explore', label: 'Explore', icon: 'trophy', Comp: ExploreTab },
     { key: 'settings', label: 'Settings', icon: 'settings', Comp: SettingsTab }
   ];
 
