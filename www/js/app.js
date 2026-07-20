@@ -533,7 +533,8 @@
     } : {
       racquet_id: pre, date_strung: U.todayISODate(), stringer_name: '',
       mains: Object.assign({ brand: '', model: '', gauge: '', type: '' }, props.prefillMains || {}), mains_tension_lbs: null,
-      crosses_same_as_mains: true, crosses: { brand: '', model: '', gauge: '', type: '' }, crosses_tension_lbs: null,
+      crosses_same_as_mains: !props.prefillCrosses,
+      crosses: Object.assign({ brand: '', model: '', gauge: '', type: '' }, props.prefillCrosses || {}), crosses_tension_lbs: null,
       pre_stretch_applied: false, stringing_machine: '', cost: null,
       why_restrung: props.why || (props.firstTime ? 'first_time' : 'new_setup'), notes: '', date_broke: null
     });
@@ -1015,8 +1016,11 @@
               h('div', { style: { fontSize: 16.5, fontWeight: 700 } }, p.flag + ' ' + p.name),
               h('div', { style: { fontSize: 13, color: C.textDim, marginTop: 2 } }, p.racquet)),
             p.legend ? h(Badge, { tone: 'gold' }, 'Legend') : null),
-          h('div', { style: { fontSize: 13.5, color: C.text, marginTop: 8 } },
-            p.mains + (p.crosses && p.crosses !== 'Same as mains' ? ' + ' + p.crosses : '')),
+          p.crosses && p.crosses !== 'Same as mains'
+            ? h('div', { style: { marginTop: 8 } },
+                h('div', { style: { fontSize: 13, color: C.text } }, h('span', { style: { color: C.textDim } }, 'Mains: '), p.mains),
+                h('div', { style: { fontSize: 13, color: C.text, marginTop: 2 } }, h('span', { style: { color: C.textDim } }, 'Crosses: '), p.crosses))
+            : h('div', { style: { fontSize: 13.5, color: C.text, marginTop: 8 } }, p.mains + ' · full bed'),
           h('div', { style: { fontSize: 12.5, color: C.gold, fontWeight: 600, marginTop: 3 } }, p.tension));
       }),
       h('div', { style: { fontSize: 12.5, color: C.textDim, lineHeight: 1.5, marginTop: 6, padding: '0 2px' } },
@@ -1035,7 +1039,8 @@
         h(SpecRow, { label: 'Crosses', value: p.crosses }),
         h(SpecRow, { label: 'Tension', value: p.tension })),
       h(Card, null, h('div', { style: { fontSize: 13.5, color: C.text, lineHeight: 1.55 } }, p.notes)),
-      p.prefill ? h(Button, { icon: 'plus', onClick: function () { nav.push(AddStringJobScreen, { prefillMains: p.prefill }); } }, 'Try This String') : null,
+      p.prefill ? h(Button, { icon: 'plus', onClick: function () { nav.push(AddStringJobScreen, { prefillMains: p.prefill, prefillCrosses: p.prefillCrosses || null }); } },
+        p.prefillCrosses ? 'Try This Setup' : 'Try This String') : null,
       h('div', { style: { fontSize: 12.5, color: C.textDim, lineHeight: 1.5, marginTop: 14 } },
         'As widely reported. Pro frames are customized under the paint and pro tensions suit pro swings — treat this as inspiration, not a prescription.'));
   }
@@ -1050,8 +1055,8 @@
       return SL.advisor.recommend(DS.getStringCatalog(), form, racquet);
     }, [form.goal, form.secondary, form.elbow, form.breaker, form.value]);
     var secOpts = [{ value: '', label: 'None' }].concat(SL.advisor.GOALS.filter(function (g) { return g.value !== form.goal; }));
-    function useString(pre) {
-      nav.push(AddStringJobScreen, { prefillMains: pre });
+    function useString(mains, crosses) {
+      nav.push(AddStringJobScreen, { prefillMains: mains, prefillCrosses: crosses || null });
     }
     return h(Screen, { title: 'Setup Finder', onBack: function () { nav.pop(); } },
       h(Segmented, { label: 'What do you want more of?', value: form.goal,
@@ -1062,6 +1067,8 @@
         h(Toggle, { label: 'I break strings often', value: form.breaker, onChange: set('breaker') }),
         h(Toggle, { label: 'Keep it budget-friendly', value: form.value, onChange: set('value') })),
       h(SectionLabel, null, 'Recommended Strings'),
+      h('div', { style: { fontSize: 12.5, color: C.textDim, margin: '-4px 2px 10px', lineHeight: 1.4 } },
+        'Each is a full bed: the same string in mains and crosses.'),
       rec.picks.length ? h('div', null, rec.picks.map(function (p, i) {
         return h(Card, { key: p.id },
           h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 } },
@@ -1080,7 +1087,8 @@
           h('div', { style: { fontSize: 13.5, color: C.text, marginTop: 2 } }, 'Crosses: ' + rec.hybrid.crosses),
           h('div', { style: { fontSize: 13, color: C.textDim, marginTop: 6, lineHeight: 1.45 } }, rec.hybrid.why),
           h('div', { style: { marginTop: 10 } },
-            h('button', { onClick: function () { useString(rec.hybrid.prefill); }, style: { color: C.gold, fontSize: 14, fontWeight: 600 } }, '+ Use in a String Job')))) : null,
+            h('button', { onClick: function () { useString(rec.hybrid.prefill, rec.hybrid.prefillCrosses); }, style: { color: C.gold, fontSize: 14, fontWeight: 600 } },
+              '+ Use in a String Job' + (rec.hybrid.prefillCrosses ? ' (fills mains + crosses)' : ''))))) : null,
       h(SectionLabel, null, 'Tension'),
       h(Card, null,
         rec.tension.targetLbs ? h('div', { style: { fontSize: 15, fontWeight: 700, color: C.gold, marginBottom: 6 } },

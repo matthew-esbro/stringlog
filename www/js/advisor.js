@@ -17,8 +17,8 @@
       id: 'alcaraz', name: 'Carlos Alcaraz', flag: '🇪🇸', style: 'Explosive all-court',
       racquet: 'Babolat Pure Aero 98',
       mains: 'Babolat RPM Blast 16 (1.30)', crosses: 'Same as mains',
-      tension: '55 / 51 lbs (25 / 23 kg)',
-      notes: 'Full poly with the mains a few pounds tighter than the crosses. A thick 16-gauge for durability under extreme spin.',
+      tension: '55 lbs mains / 51 lbs crosses (25 / 23 kg)',
+      notes: 'Full poly with the mains a few pounds tighter than the crosses; thick 16 gauge for durability under extreme spin. Some late-2025 reports say he moved to the softer RPM Team.',
       prefill: { brand: 'Babolat', model: 'RPM Blast', gauge: '16g', type: 'Polyester' }
     },
     {
@@ -32,10 +32,11 @@
     {
       id: 'djokovic', name: 'Novak Djokovic', flag: '🇷🇸', style: 'Precision baseline',
       racquet: 'Head Speed Pro (custom PT113B)',
-      mains: 'Babolat VS Touch natural gut 16 (1.30)', crosses: 'Luxilon ALU Power Rough 16L (1.25)',
-      tension: '~59 lbs mains / 56 lbs crosses',
-      notes: 'The classic modern hybrid: gut mains for feel and tension stability, textured poly crosses for spin and control.',
-      prefill: { brand: 'Babolat', model: 'VS Touch', gauge: '16g', type: 'Natural Gut' }
+      mains: 'Babolat VS natural gut 17 (1.25)', crosses: 'Luxilon ALU Power Rough 16L (1.25)',
+      tension: '~59 lbs mains / 56 lbs crosses (27–28 / 26–27 kg)',
+      notes: 'Same orientation as Federer: gut mains for feel and tension stability, textured poly crosses for spin and control. Strung on a customized PT113B under Speed paint.',
+      prefill: { brand: 'Babolat', model: 'VS Touch', gauge: '17g', type: 'Natural Gut' },
+      prefillCrosses: { brand: 'Luxilon', model: 'ALU Power Rough', gauge: '16L', type: 'Polyester' }
     },
     {
       id: 'swiatek', name: 'Iga Swiatek', flag: '🇵🇱', style: 'Heavy topspin, first-strike',
@@ -55,67 +56,70 @@
     },
     {
       id: 'medvedev', name: 'Daniil Medvedev', flag: '🇷🇺', style: 'Deep, flat counterpunching',
-      racquet: 'Tecnifibre TFight 305',
-      mains: 'Tecnifibre Razor Soft', crosses: 'Same as mains',
-      tension: 'Adjusts frequently with conditions',
-      notes: 'A softer-feeling control poly suited to his flat, skiddy ball. Famous for changing tension between matches.',
-      prefill: { brand: 'Tecnifibre', model: 'Razor Soft', gauge: '17g', type: 'Polyester' }
+      racquet: 'Tecnifibre TFight 305S',
+      mains: 'Natural gut', crosses: 'Tecnifibre Razor Soft',
+      tension: 'Reference ~48–49 lbs, adjusted match to match',
+      notes: 'Recent seasons: gut mains over Razor Soft crosses, after years of full-bed Razor Code. Famous for tweaking tension constantly, with one of the lower reference tensions on tour.'
     },
     {
       id: 'tsitsipas', name: 'Stefanos Tsitsipas', flag: '🇬🇷', style: 'Aggressive one-hander',
-      racquet: 'Wilson Blade 98 (18x20)',
-      mains: 'Luxilon 4G 16L (1.25)', crosses: 'Same as mains',
-      tension: '~52–55 lbs',
-      notes: '4G is known for holding tension unusually well, keeping the dense 18x20 bed predictable for days.',
+      racquet: 'Babolat Pure Aero 98 (2026; Wilson Blade 98 18x20 before)',
+      mains: 'Luxilon 4G 16L (Wilson era)', crosses: 'Same as mains',
+      tension: '~53 lbs (24 kg), conditions-dependent',
+      notes: 'Switched to the Pure Aero 98 for 2026 chasing more forgiveness; his string in the new frame isn’t reliably reported yet. In the Wilson years he ran full-bed 4G, with natural gut crosses for a stretch after his 2021 elbow surgery.',
       prefill: { brand: 'Luxilon', model: '4G', gauge: '16L', type: 'Polyester' }
     },
     {
       id: 'kyrgios', name: 'Nick Kyrgios', flag: '🇦🇺', style: 'Serve-first shotmaking',
       racquet: 'Yonex EZONE 98',
-      mains: 'Yonex Poly Tour Pro 16L (1.25)', crosses: 'Same as mains',
-      tension: 'Low-to-mid 50s lbs',
-      notes: 'A softer poly that pairs with the forgiving EZONE for easy power on serve.',
+      mains: 'Yonex Poly Tour Pro (pro spec, reported 1.20)', crosses: 'Same as mains',
+      tension: '~55 lbs',
+      notes: 'A softer poly that pairs with the forgiving EZONE for easy power on serve. His is reportedly a pro-exclusive, slightly softer spec of the retail string.',
       prefill: { brand: 'Yonex', model: 'Poly Tour Pro', gauge: '16L', type: 'Polyester' }
     },
     {
       id: 'osaka', name: 'Naomi Osaka', flag: '🇯🇵', style: 'First-strike power',
       racquet: 'Yonex EZONE 98',
-      mains: 'Yonex Poly Tour Pro', crosses: 'Same as mains',
-      tension: 'Reported around the low 50s lbs',
-      notes: 'Same string family as Kyrgios: comfortable poly, big targets, big swings.',
-      prefill: { brand: 'Yonex', model: 'Poly Tour Pro', gauge: '16L', type: 'Polyester' }
+      mains: 'Yonex Poly Tour Strike 16L (1.25)', crosses: 'Babolat VS Touch natural gut 16',
+      tension: '59 lbs mains / 56 lbs crosses',
+      notes: 'Poly mains with natural gut crosses, the same inverted orientation Murray made famous: control off the mains, comfort and pop from the gut.',
+      prefill: { brand: 'Yonex', model: 'Poly Tour Strike', gauge: '16L', type: 'Polyester' },
+      prefillCrosses: { brand: 'Babolat', model: 'VS Touch', gauge: '16g', type: 'Natural Gut' }
     },
     {
       id: 'nadal', name: 'Rafael Nadal', flag: '🇪🇸', legend: true, style: 'Extreme topspin',
-      racquet: 'Babolat Pure Aero',
-      mains: 'Babolat RPM Blast 15L (1.35)', crosses: 'Same as mains',
+      racquet: 'Babolat Pure Aero (pro stock AeroPro Drive under the paint)',
+      mains: 'Babolat RPM Blast 15L (1.35); 16 (1.30) from 2022', crosses: 'Same as mains',
       tension: '55 lbs (25 kg), famously consistent',
-      notes: 'The heaviest topspin in history on the thickest RPM gauge. He kept 25 kg nearly his whole career, adjusting only for extreme conditions.',
+      notes: 'The heaviest topspin in history, strung full bed at 55 lbs both ways for virtually his whole career. He moved from the thick 1.35 gauge to 1.30 in his final seasons.',
       prefill: { brand: 'Babolat', model: 'RPM Blast', gauge: '15L', type: 'Polyester' }
     },
     {
       id: 'federer', name: 'Roger Federer', flag: '🇨🇭', legend: true, style: 'All-court artistry',
       racquet: 'Wilson Pro Staff RF97 Autograph',
       mains: 'Wilson Natural Gut 16 (1.30)', crosses: 'Luxilon ALU Power Rough 16L (1.25)',
-      tension: '~57 / 54 lbs (26 / 24.5 kg), pre-stretched',
+      tension: '~57 lbs mains / 54 lbs crosses (26 / 24.5 kg), pre-stretched',
       notes: 'The hybrid that defined an era, sold retail as Wilson Champion’s Choice. Gut mains give feel and pop; rough poly crosses add spin. His team pre-stretched the gut and kept tension within about a kilogram all season.',
-      prefill: { brand: 'Wilson', model: 'Champion’s Choice (Hybrid)', gauge: '16g', type: 'Hybrid' }
+      prefill: { brand: 'Wilson', model: 'Natural Gut', gauge: '16g', type: 'Natural Gut' },
+      prefillCrosses: { brand: 'Luxilon', model: 'ALU Power Rough', gauge: '16L', type: 'Polyester' }
     },
     {
       id: 'serena', name: 'Serena Williams', flag: '🇺🇸', legend: true, style: 'Overwhelming power',
       racquet: 'Wilson Blade SW102 Autograph',
       mains: 'Wilson Natural Gut 16', crosses: 'Luxilon 4G 16L (1.25)',
-      tension: 'Mid-60s lbs — among the tightest on tour',
-      notes: 'Gut/4G hybrid strung very tight to keep her enormous power inside the lines.',
-      prefill: { brand: 'Wilson', model: 'Natural Gut', gauge: '16g', type: 'Natural Gut' }
+      tension: '~65 lbs mains / 64 lbs crosses, among the tightest on tour',
+      notes: 'Gut mains with 4G crosses, strung very tight to keep her enormous power inside the lines. Her setup since 2012.',
+      prefill: { brand: 'Wilson', model: 'Natural Gut', gauge: '16g', type: 'Natural Gut' },
+      prefillCrosses: { brand: 'Luxilon', model: '4G', gauge: '16L', type: 'Polyester' }
     },
     {
       id: 'murray', name: 'Andy Murray', flag: '🇬🇧', legend: true, style: 'Elite counterpuncher',
-      racquet: 'Head Radical Pro (custom PT57A)',
-      mains: 'Natural gut 16', crosses: 'Luxilon ALU Power 16L (1.25)',
-      tension: '~56–62 lbs, varied by conditions',
-      notes: 'Another gut/poly player, known for micro-adjusting tension day to day more than almost anyone.',
-      prefill: { brand: 'Luxilon', model: 'ALU Power', gauge: '16L', type: 'Polyester' }
+      racquet: 'Head Radical Pro (custom PT57A2)',
+      mains: 'Luxilon ALU Power', crosses: 'Babolat VS natural gut',
+      tension: '~60–62 lbs, varied through the season',
+      notes: 'The famous inverted hybrid: poly mains with gut crosses, the reverse of Federer and Djokovic. He only swapped the gut into his mains for his final season in 2024.',
+      prefill: { brand: 'Luxilon', model: 'ALU Power', gauge: '16L', type: 'Polyester' },
+      prefillCrosses: { brand: 'Babolat', model: 'VS Touch', gauge: '16g', type: 'Natural Gut' }
     }
   ];
 
@@ -326,7 +330,8 @@
         mains: 'Head Velocity MLT 16 (multifilament)',
         crosses: 'Solinco Hyper-G Soft 16L (soft shaped poly)',
         why: 'Soft multi in the mains protects the arm; a shaped soft poly in the crosses keeps real spin. The best of both when full poly is off the table.',
-        prefill: { brand: 'Head', model: 'Velocity MLT', gauge: '16g', type: 'Multifilament' }
+        prefill: { brand: 'Head', model: 'Velocity MLT', gauge: '16g', type: 'Multifilament' },
+        prefillCrosses: { brand: 'Solinco', model: 'Hyper-G Soft', gauge: '16L', type: 'Polyester' }
       };
     }
     if ((prefs.goal === 'feel' || prefs.goal === 'power') && !prefs.value) {
@@ -335,7 +340,8 @@
         mains: 'Natural gut 16 (e.g. Babolat VS Touch)',
         crosses: 'Luxilon ALU Power Rough 16L',
         why: 'The Federer/Djokovic pattern: gut mains for feel, pop, and tension stability; textured poly crosses for spin and control.',
-        prefill: { brand: 'Babolat', model: 'VS Touch', gauge: '16g', type: 'Natural Gut' }
+        prefill: { brand: 'Babolat', model: 'VS Touch', gauge: '16g', type: 'Natural Gut' },
+        prefillCrosses: { brand: 'Luxilon', model: 'ALU Power Rough', gauge: '16L', type: 'Polyester' }
       };
     }
     if (prefs.breaker && (prefs.goal === 'durability' || prefs.goal === 'control') && !prefs.elbow) {
