@@ -97,8 +97,8 @@
       id: 'federer', name: 'Roger Federer', flag: '🇨🇭', legend: true, style: 'All-court artistry',
       racquet: 'Wilson Pro Staff RF97 Autograph',
       mains: 'Wilson Natural Gut 16 (1.30)', crosses: 'Luxilon ALU Power Rough 16L (1.25)',
-      tension: '48.5 lbs mains / 45 lbs crosses',
-      notes: 'The hybrid that defined an era, sold retail as Wilson Champion’s Choice. Gut mains give feel and pop; rough poly crosses add spin.',
+      tension: '~57 / 54 lbs (26 / 24.5 kg), pre-stretched',
+      notes: 'The hybrid that defined an era, sold retail as Wilson Champion’s Choice. Gut mains give feel and pop; rough poly crosses add spin. His team pre-stretched the gut and kept tension within about a kilogram all season.',
       prefill: { brand: 'Wilson', model: 'Champion’s Choice (Hybrid)', gauge: '16g', type: 'Hybrid' }
     },
     {
